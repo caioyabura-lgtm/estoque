@@ -5,117 +5,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUCISOL</title>
   <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      font-size: 15px;
-      background: #f4f4f4;
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      font-size:15px;
+      background:#f4f4f4;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
 
-    .container {
-      width: 320px;
-      padding: 24px;
-      background: #ffffff;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    .container{
+      width:320px;
+      background:#fff;
+      padding:24px;
+      border-radius:10px;
+      text-align:center;
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
     }
 
-    h1 {
-      margin: 0 0 20px;
-      font-size: 22px;
+    h1{
+      margin:0 0 20px;
+      font-size:22px;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    form{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
     }
 
-    input, button {
-      width: 100%;
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 6px;
-      box-sizing: border-box;
+    input,button{
+      width:100%;
+      padding:10px;
+      font-size:15px;
+      border-radius:6px;
+      box-sizing:border-box;
     }
 
-    input {
-      border: 1px solid #cccccc;
+    input{
+      border:1px solid #ccc;
     }
 
-    button {
-      border: none;
-      background: #222222;
-      color: #ffffff;
-      cursor: pointer;
+    button{
+      border:none;
+      background:#222;
+      color:#fff;
+      cursor:pointer;
     }
 
-    #feedback {
-      min-height: 22px;
-      margin-top: 14px;
+    #msg{
+      min-height:22px;
+      margin-top:14px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>LUCISOL</h1>
 
-    <form id="produtoForm">
-      <input type="text" id="nome" placeholder="Nome do produto" required>
-      <input type="number" id="preco" placeholder="Preço" step="0.01" required>
-      <button type="submit">Enviar</button>
-    </form>
+<div class="container">
+  <h1>LUCISOL</h1>
 
-    <div id="feedback"></div>
-  </div>
+  <form id="form">
+    <input type="text" id="nome" placeholder="Nome do produto" required>
+    <input type="number" id="preco" placeholder="Preço" step="0.01" required>
+    <button type="submit">Enviar</button>
+  </form>
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxAUuvJrUDlEKhjhXoyIuiN6enqr3-94nlRe9TZRKb_Hu5QUa0rwNIEtJijGSSSKcbqCA/exec";
+  <div id="msg"></div>
+</div>
 
-    const form = document.getElementById("produtoForm");
-    const feedback = document.getElementById("feedback");
-    const submitButton = form.querySelector("button");
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTDWDtCVWQiRgsHQhnFRo1dJK3-f262SOuX528UuKcli1lAP4M_lGZdJAT_b27XGWb3g/exec";
 
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
+const form = document.getElementById("form");
+const msg = document.getElementById("msg");
 
-      const nome = document.getElementById("nome").value.trim();
-      const preco = document.getElementById("preco").value.trim();
+form.onsubmit = async (e) => {
+  e.preventDefault();
 
-      if (!nome || !preco) {
-        feedback.textContent = "Erro";
-        return;
-      }
+  const dados = {
+    nome: document.getElementById("nome").value,
+    preco: document.getElementById("preco").value
+  };
 
-      submitButton.disabled = true;
-      feedback.textContent = "Enviando...";
+  msg.innerText = "Enviando...";
 
-      const payload = {
-        nome: nome,
-        preco: preco
-      };
-
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          mode: "no-cors",
-          body: JSON.stringify(payload)
-        });
-
-        feedback.textContent = "Enviado. Confira a planilha.";
-        form.reset();
-
-      } catch (error) {
-        feedback.textContent = "Erro conexão";
-      } finally {
-        submitButton.disabled = false;
-      }
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(dados)
     });
-  </script>
+
+    const r = await res.json();
+
+    msg.innerText = r.success ? "Incluído ✔" : "Erro";
+  }catch{
+    msg.innerText = "Erro conexão";
+  }
+};
+</script>
+
 </body>
 </html>
