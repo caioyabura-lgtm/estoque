@@ -59,42 +59,62 @@
       min-height: 22px;
       margin-top: 14px;
     }
-
-    iframe {
-      display: none;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>LUCISOL</h1>
 
-    <form
-      id="produtoForm"
-      action="https://script.google.com/macros/s/AKfycbz2JTmem80wbfQ3NhQlx6ncQMyPUC0gJFLZ302PDaEc-Lm78jpdKteO1D94l1MxaNJE-Q/exec"
-      method="POST"
-      target="hidden_iframe"
-    >
-      <input type="text" id="nome" name="nome" placeholder="Nome do produto" required>
-      <input type="number" id="preco" name="preco" placeholder="Preço" step="0.01" required>
+    <form id="produtoForm">
+      <input type="text" id="nome" placeholder="Nome do produto" required>
+      <input type="number" id="preco" placeholder="Preço" step="0.01" required>
       <button type="submit">Enviar</button>
     </form>
 
     <div id="feedback"></div>
-    <iframe name="hidden_iframe"></iframe>
   </div>
 
   <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxAUuvJrUDlEKhjhXoyIuiN6enqr3-94nlRe9TZRKb_Hu5QUa0rwNIEtJijGSSSKcbqCA/exec";
+
     const form = document.getElementById("produtoForm");
     const feedback = document.getElementById("feedback");
+    const submitButton = form.querySelector("button");
 
-    form.addEventListener("submit", function () {
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const preco = document.getElementById("preco").value.trim();
+
+      if (!nome || !preco) {
+        feedback.textContent = "Erro";
+        return;
+      }
+
+      submitButton.disabled = true;
       feedback.textContent = "Enviando...";
 
-      setTimeout(() => {
-        feedback.textContent = "Incluído com sucesso!";
+      const payload = {
+        nome: nome,
+        preco: preco
+      };
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(payload)
+        });
+
+        feedback.textContent = "Enviado. Confira a planilha.";
         form.reset();
-      }, 1000);
+
+      } catch (error) {
+        feedback.textContent = "Erro conexão";
+      } finally {
+        submitButton.disabled = false;
+      }
     });
   </script>
 </body>
