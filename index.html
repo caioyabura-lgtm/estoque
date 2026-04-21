@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUCISOL</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      background: #f4f4f4;
+    }
+
+    .container {
+      width: 320px;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: 22px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    input {
+      border: 1px solid #cccccc;
+    }
+
+    button {
+      border: none;
+      background: #222222;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    #feedback {
+      min-height: 22px;
+      margin-top: 14px;
+    }
+
+    iframe {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LUCISOL</h1>
+
+    <form
+      id="produtoForm"
+      action="https://script.google.com/macros/s/AKfycbz2JTmem80wbfQ3NhQlx6ncQMyPUC0gJFLZ302PDaEc-Lm78jpdKteO1D94l1MxaNJE-Q/exec"
+      method="POST"
+      target="hidden_iframe"
+    >
+      <input type="text" id="nome" name="nome" placeholder="Nome do produto" required>
+      <input type="number" id="preco" name="preco" placeholder="Preço" step="0.01" required>
+      <button type="submit">Enviar</button>
+    </form>
+
+    <div id="feedback"></div>
+    <iframe name="hidden_iframe"></iframe>
+  </div>
+
+  <script>
+    const form = document.getElementById("produtoForm");
+    const feedback = document.getElementById("feedback");
+
+    form.addEventListener("submit", function () {
+      feedback.textContent = "Enviando...";
+
+      setTimeout(() => {
+        feedback.textContent = "Incluído com sucesso!";
+        form.reset();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
